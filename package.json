@@ -11,6 +11,8 @@
     "build": "bun bun.config.js"
   },
   "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.23",
     "@rails/ujs": "^7.1.0"
   },
   "devDependencies": {

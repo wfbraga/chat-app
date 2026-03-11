@@ -10,8 +10,7 @@ gem 'pg', '~> 1.1'
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
 # Use SCSS for stylesheets
-# gem 'sass-rails', '>= 6'
-
+gem 'sassc-rails'
 # 04-08-2023: Switched to esbuild
 gem 'cssbundling-rails'
 gem 'jsbundling-rails'
@@ -25,14 +24,13 @@ gem 'jbuilder', '~> 2.7'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
-# Use Active Storage variant
-# gem 'image_processing', '~> 1.2'
+gem 'hotwire-rails'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 
 group :development, :test do
-  # gem 'dotenv-rails'
+  gem 'dotenv-rails'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
 
