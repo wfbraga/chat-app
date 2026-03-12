@@ -7,7 +7,7 @@ class Admin::MessagesController < ApplicationController
   def create
     @message = @conversation.messages.new(
       sender: current_user,
-      body: params[:message][:body]
+      body: params[:body]
     )
 
     if @message.save
