@@ -1,0 +1,5 @@
+<% if current_user.staff? %>
+  <%= render 'conversations/partials/conversations' %>
+<% else %>
+  <%= render 'conversations/partials/user-options' %>
+<% end %>

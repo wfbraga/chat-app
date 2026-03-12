@@ -1,0 +1,68 @@
+<%# app/views/admin/conversations/show.html.erb %>
+<div class="row g-4">
+
+  <%# Chat panel %>
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        💬 <%= @conversation.user.display_name %> —
+        <span class="text-muted"><%= @conversation.department.humanize %></span>
+      </div>
+
+      <div class="card-body" style="height: 400px; overflow-y: auto;" id="messages">
+        <%= render @messages %>
+      </div>
+
+      <div class="card-footer">
+        <% unless @conversation.closed? %>
+          <%= form_with url: admin_conversation_messages_path(@conversation), method: :post do |f| %>
+            <div class="input-group">
+              <%= f.text_field :body, class: 'form-control',
+                               placeholder: 'Responder...', autocomplete: 'off' %>
+              <%= f.submit 'Enviar', class: 'btn btn-primary' %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%# Sidebar panel %>
+  <div class="col-md-4">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h6 class="card-title">Información de la Conversación</h6>
+        <p class="mb-1"><strong>Estado:</strong> <%= @conversation.status.humanize %></p>
+        <p class="mb-1"><strong>Departamento:</strong> <%= @conversation.department.humanize %></p>
+        <p class="mb-0"><strong>Asignado a:</strong>
+          <%= @conversation.staff&.display_name || 'Nadie aún' %>
+        </p>
+      </div>
+    </div>
+
+    <% if current_user.admin? && !@conversation.closed? %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="card-title">Asignar a Personal</h6>
+          <%= form_with url: assign_admin_conversation_path(@conversation),
+                        method: :patch do |f| %>
+            <div class="mb-2">
+              <%= select_tag :staff_id,
+                             options_from_collection_for_select(
+                               User.where(role: [:support, :sales]),
+                               :id, :display_name, @conversation.staff_id
+                             ),
+                             class: 'form-select form-select-sm' %>
+            </div>
+            <%= f.submit 'Asignar', class: 'btn btn-sm btn-primary w-100' %>
+          <% end %>
+        </div>
+      </div>
+
+      <%= button_to 'Cerrar Conversación',
+                    close_admin_conversation_path(@conversation),
+                    method: :patch, class: 'btn btn-sm btn-outline-danger w-100' %>
+    <% end %>
+  </div>
+
+</div>
