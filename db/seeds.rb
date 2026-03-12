@@ -10,3 +10,5 @@ User.create!(email: 'admin@test.com',    password: 'password', role: :admin,   d
 User.create!(email: 'support@test.com',  password: 'password', role: :support, display_name: 'Support Agent')
 User.create!(email: 'sales@test.com',    password: 'password', role: :sales,   display_name: 'Sales Rep')
 User.create!(email: 'user@test.com',     password: 'password', role: :user,    display_name: 'John Doe')
+User.create!(email: 'user@test.com',     password: 'password', role: :user,    display_name: 'John Doe')
+User.create!(email: 'user2@test.com', password: 'password', role: :user,    display_name: 'Johana Doe')
