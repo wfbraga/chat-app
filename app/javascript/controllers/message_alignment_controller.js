@@ -8,6 +8,7 @@ export default class extends Controller {
   }
 
   connect() {
+    console.log('MessageAlignment controller connected')
     this.alignMessage()
   }
 
@@ -16,13 +17,18 @@ export default class extends Controller {
     const messagesContainer = document.getElementById('messages')
     const currentUserId = messagesContainer?.dataset.currentUserId
 
+    console.log('Aligning message:', { senderId, currentUserId })
+
     // Comparación robusta convirtiendo ambos a string
     const isMine = senderId && currentUserId && senderId.toString() === currentUserId.toString()
+
+    console.log('Is mine?', isMine)
 
     const messageContent = this.element.querySelector('.message-content')
     const badge = this.element.querySelector('.badge')
 
     if (isMine) {
+      console.log('Applying "mine" styles (gray, right)')
       // Es mi mensaje - alineado a la derecha con fondo gris
       this.element.classList.add('justify-content-end')
       this.element.classList.remove('justify-content-start')
@@ -37,6 +43,7 @@ export default class extends Controller {
         badge.style.display = 'none'
       }
     } else {
+      console.log('Applying role-based styles (colored, left)')
       // Mensaje de otro - alineado a la izquierda con colores según rol
       this.element.classList.add('justify-content-start')
       this.element.classList.remove('justify-content-end')

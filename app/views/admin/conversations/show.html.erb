@@ -13,7 +13,7 @@
            id="messages"
            data-current-user-id="<%= current_user.id %>"
            data-controller="messages-container">
-        <%= render @messages %>
+        <%= render partial: 'admin/messages/message', collection: @messages, locals: { viewing_user_id: current_user.id } %>
       </div>
 
       <div class="card-footer">

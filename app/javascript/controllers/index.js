@@ -6,3 +6,10 @@ import { application } from "./application"
 
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
+
+import MessageAlignmentController from "./message_alignment_controller"
+application.register("message-alignment", MessageAlignmentController)
+
+import MessagesContainerController from "./messages_container_controller"
+application.register("messages-container", MessagesContainerController)
+
