@@ -2,7 +2,7 @@
   <%= current_user.admin? ? 'All Conversations' : 'My Conversations' %>
 </h4>
 
-<% if @conversations.empty? %>
+<% if !@conversations %>
   <p class="text-muted">No conversations yet.</p>
 <% else %>
   <div class="list-group">

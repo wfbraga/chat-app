@@ -1,0 +1,14 @@
+<%# El broadcast en after_create_commit del modelo Message manejará la actualización %>
+<%# Esto evita duplicar el mensaje para el remitente %>
+
+<%# Limpiar el campo de entrada después de enviar %>
+<%= turbo_stream.update "new_message_form" do %>
+  <%= form_with url: admin_conversation_messages_path(@conversation), method: :post, id: "new_message_form" do |f| %>
+    <div class="input-group">
+      <%= f.text_field :body, class: 'form-control',
+                       placeholder: 'Responder...', autocomplete: 'off' %>
+      <%= f.submit 'Enviar', class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+<% end %>
+

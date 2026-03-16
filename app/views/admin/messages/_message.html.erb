@@ -1,10 +1,21 @@
-<% is_mine = message.sender_id == current_user.id %>
-<div class="d-flex mb-3 <%= is_mine ? 'justify-content-end' : 'justify-content-start' %>">
-  <div class="p-3 rounded-3 mw-75"
-       style="max-width: 75%; background-color: <%= is_mine ? '#0d6efd' : '#f0f0f0' %>;
-         color: <%= is_mine ? 'white' : 'black' %>;">
+<%
+  # Para la vista de admin, obtenemos estilos base según el rol (sin viewing_user_id)
+  # El Stimulus controller ajustará dinámicamente si es mensaje propio
+  styles = message_bubble_styles(message)
+%>
+
+<div class="d-flex mb-3 message-bubble"
+     data-sender-id="<%= message.sender_id %>"
+     data-controller="message-alignment"
+     data-message-alignment-bg-color-value="<%= styles[:bg_color] %>"
+     data-message-alignment-text-color-value="<%= styles[:text_color] %>">
+  <div class="p-3 rounded-3 mw-75 message-content"
+       style="max-width: 75%; background-color: <%= styles[:bg_color] %>; color: <%= styles[:text_color] %>;">
     <div class="small fw-semibold mb-1">
       <%= message.sender.display_name %>
+      <span class="<%= role_badge_classes %>" style="<%= role_badge_style(styles[:text_color]) %>">
+        <%= message.sender.role.capitalize %>
+      </span>
     </div>
     <div><%= message.body %></div>
     <div class="small mt-1 opacity-75">
@@ -12,3 +23,4 @@
     </div>
   </div>
 </div>
+

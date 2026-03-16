@@ -10,7 +10,9 @@
           <span class="badge bg-secondary"><%= current_user.role %></span>
         </span>
         <%= link_to 'Sign out', destroy_user_session_path,
-                    method: :get, class: 'btn btn-outline-light btn-sm' %>
+                    method: :delete,
+                    data: { turbo_confirm: "¿Deseas cerrar sesión?" },
+                    class: 'btn btn-outline-light btn-sm' %>
       </div>
     <% end %>
   </div>

@@ -1,4 +1,4 @@
-<%# app/views/admin/conversations/show.html.erb %>
+<%= turbo_stream_from "staff_conversation_#{@conversation.id}_messages" %>
 <div class="row g-4">
 
   <%# Chat panel %>
@@ -9,13 +9,16 @@
         <span class="text-muted"><%= @conversation.department.humanize %></span>
       </div>
 
-      <div class="card-body" style="height: 400px; overflow-y: auto;" id="messages">
+      <div class="card-body" style="height: 400px; overflow-y: auto;"
+           id="messages"
+           data-current-user-id="<%= current_user.id %>"
+           data-controller="messages-container">
         <%= render @messages %>
       </div>
 
       <div class="card-footer">
         <% unless @conversation.closed? %>
-          <%= form_with url: admin_conversation_messages_path(@conversation), method: :post do |f| %>
+          <%= form_with url: admin_conversation_messages_path(@conversation), method: :post, id: "new_message_form" do |f| %>
             <div class="input-group">
               <%= f.text_field :body, class: 'form-control',
                                placeholder: 'Responder...', autocomplete: 'off' %>

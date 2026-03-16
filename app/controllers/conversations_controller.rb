@@ -1,20 +1,18 @@
 # frozen_string_literal: true
 
 class ConversationsController < ApplicationController
+  before_action :set_conversation, only: %i[ show ]
   def index
-    @conversation = current_user.conversation if current_user.user?
-    if @conversation
-      redirect_to @conversation
+    if current_user.user?
+      @conversation = current_user.conversation
+      render :show and return if @conversation.present?
     elsif current_user.staff?
-      @conversations = Conversation.includes(:user, :staff).order(created_at: :desc).where(staff: current_user)
-    else
-      render :index
+      @conversations = current_user.assigned_conversations.includes(:user, :staff).order(created_at: :desc).where(staff: current_user)
     end
+    render :index
   end
 
   def show
-    @conversation = current_user.conversation
-
     if !@conversation.closed?
       @messages = @conversation.messages.includes(:sender).order(created_at: :asc) if @conversation.messages.any?
     else
@@ -35,6 +33,16 @@ class ConversationsController < ApplicationController
       redirect_to @conversation,notice: 'Hola! Aguarde un momento mientras se abre una nueva conversación.'
     else
       redirect_to :index, alert: 'Failed to create conversation.'
+    end
+  end
+
+  private
+
+  def set_conversation
+    if current_user.admin?
+      @conversation = Conversation.find(params[:id])
+    else
+      @conversation = Conversation.visible_to(current_user).find(params[:id])
     end
   end
 end

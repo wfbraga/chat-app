@@ -14,6 +14,7 @@ class Conversation < ApplicationRecord
 
   scope :unrouted, -> { where(staff: nil) }
   scope :active,   -> { where(status: [:awaiting_assignment, :open]) }
+  scope :visible_to, ->(user) { where('user_id = :id OR staff_id = :id', id: user.id)}
 
   private
 

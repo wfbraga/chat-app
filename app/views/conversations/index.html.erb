@@ -1,4 +1,4 @@
-<% if current_user.staff? %>
+<% if @conversations %>
   <%= render 'conversations/partials/conversations' %>
 <% else %>
   <%= render 'conversations/partials/user-options' %>

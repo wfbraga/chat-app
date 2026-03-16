@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 #
 class Admin::ConversationsController < ApplicationController
-  before_action :require_staff!
   before_action :set_conversation, only: %i[ show update assign close ]
 
   def index
@@ -9,7 +8,7 @@ class Admin::ConversationsController < ApplicationController
       if current_user.admin?
        Conversation.includes(:user, :staff).order(created_at: :desc)
       else
-       current_user.assigned_conversations.includes(:user).order(created_at: :desc)
+       current_user.assigned_conversations.includes(:user, :staff).order(created_at: :desc).where(staff: current_user)
       end
   end
 
@@ -38,7 +37,10 @@ class Admin::ConversationsController < ApplicationController
   private
 
   def set_conversation
-
-    @conversation = Conversation.find(params[:id])
+    if current_user.admin?
+      @conversation = Conversation.find(params[:id])
+    else
+      @conversation = Conversation.visible_to(current_user).find(params[:id])
+    end
   end
 end
