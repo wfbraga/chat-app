@@ -1,8 +1,13 @@
-<h4 class="mb-4">
-  <%= current_user.staff? ? 'All Conversations' : 'My Conversations' %>
-</h4>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4>
+    <%= current_user.staff? ? 'All Conversations' : 'My Conversations' %>
+  </h4>
+  <% unless current_user.staff? %>
+    <%= link_to 'New Conversation', new_conversation_path, class: 'btn btn-primary' %>
+  <% end %>
+</div>
 
-<% if !@conversations %>
+<% if @conversations.empty? %>
   <p class="text-muted">No conversations yet.</p>
 <% else %>
   <div class="list-group">
