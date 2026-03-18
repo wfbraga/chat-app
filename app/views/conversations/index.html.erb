@@ -1,5 +1,7 @@
-<% if @conversations %>
+<% if @conversations.any? %>
   <%= render 'conversations/partials/conversations' %>
 <% else %>
-  <%= render 'conversations/partials/user-options' %>
+  <div class="container">
+    <%= render 'conversations/partials/user-options' %>
+  </div>
 <% end %>
