@@ -9,8 +9,8 @@ class Conversation < ApplicationRecord
   enum department: { unassigned: 0, support: 1, sales: 2 }
 
   validates :user, presence: true
-  validate :user_must_have_user_role
   validate :staff_must_be_staff_member
+  validate :no_messages_when_closed
 
   scope :unrouted, -> { where(staff: nil) }
   scope :active,   -> { where(status: [:awaiting_assignment, :open]) }
@@ -18,11 +18,17 @@ class Conversation < ApplicationRecord
 
   private
 
-  def user_must_have_user_role
-    errors.add(:user, 'must be a regular user') if user&.staff?
-  end
-
   def staff_must_be_staff_member
     errors.add(:staff, 'must be a staff member') unless staff.nil? || staff.staff?
+  end
+
+  def no_messages_when_closed
+    if closed_at.present? && messages.any?
+      errors.add(:base, 'cannot add messages to a closed conversation')
+    end
+  end
+
+  def reopen!
+    update(status: :open, closed_at: nil)
   end
 end
