@@ -1,5 +1,5 @@
 class ConversationsController < ApplicationController
-  before_action :require_user_role, only: %i[ index show create ]
+  before_action :require_user_role, only: %i[ index show new create ]
   before_action :set_conversation, only: %i[ show ]
 
   def index
@@ -7,11 +7,14 @@ class ConversationsController < ApplicationController
     render :index
   end
 
+  def new
+    render :new
+  end
+
   def show
     authorize_conversation_access!
-    unless @conversation.closed?
-      @messages = @conversation.messages.includes(:sender).order(created_at: :asc) if @conversation.messages.any?
-    end
+    @messages = @conversation.messages.includes(:sender).order(created_at: :asc) if @conversation.messages.any?
+    @message = Message.new unless @conversation.closed?
   end
 
   def create
