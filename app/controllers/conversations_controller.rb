@@ -1,36 +1,23 @@
-# frozen_string_literal: true
-
 class ConversationsController < ApplicationController
+  before_action :require_user_role, only: %i[ index show create ]
   before_action :set_conversation, only: %i[ show ]
+
   def index
-    if current_user.user?
-      @conversation = current_user.conversation
-      render :show and return if @conversation.present?
-    elsif current_user.staff?
-      @conversations = current_user.assigned_conversations.includes(:user, :staff).order(created_at: :desc).where(staff: current_user)
-    end
+    @conversations = current_user.conversations.includes(:staff, :latest_message).order(created_at: :desc)
     render :index
   end
 
   def show
-    if !@conversation.closed?
+    authorize_conversation_access!
+    unless @conversation.closed?
       @messages = @conversation.messages.includes(:sender).order(created_at: :asc) if @conversation.messages.any?
-    else
-      render :index, alert: 'No tienes conversaciones abiertas.'
     end
   end
 
   def create
-    @conversation = current_user.conversation
-    if @conversation
-      @conversation.update(department: params[:department] || :unassigned, status: :awaiting_assignment)
-      debugger
-      redirect_to @conversation, notice: 'Que bien que volviste!!! Aguarde un momento mientras se abre una nueva conversación.'
-      return
-    end
-    @conversation = Conversation.new(user: current_user, department: params[:department] || :unassigned)
+    @conversation = current_user.conversations.build(department: params[:department] || :unassigned, status: :awaiting_assignment)
     if @conversation.save
-      redirect_to @conversation,notice: 'Hola! Aguarde un momento mientras se abre una nueva conversación.'
+      redirect_to @conversation, notice: 'Hola! Aguarde un momento mientras se abre una nueva conversación.'
     else
       redirect_to :index, alert: 'Failed to create conversation.'
     end
@@ -39,11 +26,17 @@ class ConversationsController < ApplicationController
   private
 
   def set_conversation
-    if current_user.admin?
-      @conversation = Conversation.find(params[:id])
-    else
-      @conversation = Conversation.visible_to(current_user).find(params[:id])
+    @conversation = Conversation.find(params[:id])
+  end
+
+  def authorize_conversation_access!
+    unless @conversation.user_id == current_user.id
+      redirect_to conversations_path, alert: 'You do not have access to this conversation.'
     end
+  end
+
+  def require_user_role
+    redirect_to admin_conversations_path if current_user.staff?
   end
 end
 
