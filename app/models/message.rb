@@ -58,7 +58,7 @@ class Message < ApplicationRecord
       partial: 'messages/message',
       locals: { message: self, viewing_user_id: conversation.user_id }
     )
-    
+
     # Broadcast para staff/admin (usa el partial de admin)
     broadcast_append_to(
       "staff_conversation_#{conversation.id}_messages",
