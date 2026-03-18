@@ -10,7 +10,6 @@ class Conversation < ApplicationRecord
 
   validates :user, presence: true
   validate :staff_must_be_staff_member
-  validate :no_messages_when_closed
 
   scope :unrouted, -> { where(staff: nil) }
   scope :active,   -> { where(status: [:awaiting_assignment, :open]) }
@@ -20,12 +19,6 @@ class Conversation < ApplicationRecord
 
   def staff_must_be_staff_member
     errors.add(:staff, 'must be a staff member') unless staff.nil? || staff.staff?
-  end
-
-  def no_messages_when_closed
-    if closed_at.present? && messages.any?
-      errors.add(:base, 'cannot add messages to a closed conversation')
-    end
   end
 
   def reopen!
