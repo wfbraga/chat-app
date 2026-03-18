@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       member do
         patch :assign
         patch :close
+        patch :reopen
       end
     end
   end
