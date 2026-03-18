@@ -7,6 +7,7 @@ class Message < ApplicationRecord
   validates :body, presence: true, unless: :attachment_attached?
   validates :sender, presence: true
   validate :sender_is_participant
+  validate :conversation_must_be_open
 
   scope :unread, -> { where(read_at: nil) }
 
@@ -38,6 +39,12 @@ class Message < ApplicationRecord
     allowed = [conversation.user_id, conversation.staff_id]
     unless allowed.include?(sender.id) || sender.admin?
       errors.add(:sender, 'must be a participant in the conversation or an admin')
+    end
+  end
+
+  def conversation_must_be_open
+    if conversation&.closed?
+      errors.add(:conversation, 'cannot add messages to closed conversation')
     end
   end
 
