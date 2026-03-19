@@ -32,7 +32,7 @@ class Admin::ConversationsController < ApplicationController
   end
 
   def close
-    if @conversation.update(status: :closed, closed_at: Time.current)
+    if @conversation.update(status: :closed, closed_at: Time.current, staff: nil, department: :unassigned)
       redirect_to admin_conversations_path, notice: "Conversation closed successfully."
     else
       redirect_to admin_conversation_path(@conversation), alert: "Failed to close conversation."

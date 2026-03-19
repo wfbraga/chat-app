@@ -1,8 +1,6 @@
 require "test_helper"
 
 class ConversationsControllerTest < ActionDispatch::IntegrationTest
-  include Devise::Test::IntegrationHelpers
-
   setup do
     @user = users(:one)
     @staff = users(:two) # admin role
